@@ -104,20 +104,35 @@
                             <!-- Avatar & Info -->
                             <div class="flex items-center gap-4 flex-1">
                                 <div
-                                    class="w-16 h-16 bg-gradient-to-br from-purple-400 to-blue-500 rounded-full overflow-hidden border-4 border-white shadow-lg">
+                                    class="w-16 h-16 bg-gradient-to-br from-purple-400 to-blue-500 rounded-full overflow-hidden border-4 border-white shadow-lg relative cursor-pointer group">
                                     @if ($candidate->avatar)
                                         <img src="{{ $candidate->avatar }}" alt="{{ $candidate->name }}"
-                                            class="w-full h-full object-cover">
+                                            class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
                                     @else
                                         <div
                                             class="w-full h-full flex items-center justify-center text-white text-xl font-bold">
                                             {{ substr($candidate->name, 0, 1) }}
                                         </div>
                                     @endif
+                                    
+                                    <!-- Badge Nomor Urut -->
+                                    <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center border-2 border-white shadow-sm z-10">
+                                        <span class="text-white text-xs font-bold">{{ $candidate->number }}</span>
+                                    </div>
                                 </div>
                                 <div class="flex-1">
-                                    <h3 class="text-xl font-bold text-gray-800">{{ $candidate->name }}</h3>
-                                    <p class="text-gray-600 text-sm">{{ $candidate->nim }}</p>
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <h3 class="text-xl font-bold text-gray-800">{{ $candidate->name }}</h3>
+                                        <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded border border-blue-400">
+                                            No. {{ $candidate->number }}
+                                        </span>
+                                    </div>
+                                    <p class="text-gray-600 text-sm flex items-center gap-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+                                        </svg>
+                                        {{ $candidate->nim }}
+                                    </p>
                                 </div>
                             </div>
 
@@ -125,6 +140,59 @@
                             <div class="text-right">
                                 <div class="text-4xl font-bold text-purple-600">{{ $candidate->voters->count() }}</div>
                                 <p class="text-sm text-gray-600">Suara</p>
+                            </div>
+                        </div>
+
+                        <!-- Vision & Mission Accordion/Section -->
+                        <div class="mt-4 border-t border-gray-100 pt-4">
+                            <div x-data="{ open: false }">
+                                <button @click="open = !open" class="flex items-center justify-between w-full text-left text-sm font-semibold text-gray-600 hover:text-purple-600 focus:outline-none">
+                                    <span>Visi & Misi</span>
+                                    <svg class="h-5 w-5 transform transition-transform" :class="{'rotate-180': open}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+                                
+                                <div x-show="open" 
+                                     x-transition:enter="transition ease-out duration-200"
+                                     x-transition:enter-start="opacity-0 -translate-y-2"
+                                     x-transition:enter-end="opacity-100 translate-y-0"
+                                     class="mt-3 space-y-4">
+                                    
+                                    <!-- Vision -->
+                                    <div>
+                                        <h4 class="text-sm font-bold text-gray-700 mb-1 flex items-center gap-1">
+                                            🎯 Visi
+                                        </h4>
+                                        <p class="text-gray-600 text-sm italic">"{{ $candidate->vision }}"</p>
+                                    </div>
+
+                                    <!-- Mission -->
+                                    <div>
+                                        <h4 class="text-sm font-bold text-gray-700 mb-1 flex items-center gap-1">
+                                            🚀 Misi
+                                        </h4>
+                                        <ul class="list-disc list-inside text-gray-600 text-sm space-y-1 ml-1">
+                                            @foreach(explode("\n", $candidate->mission) as $mission)
+                                                @if(trim($mission) !== '')
+                                                    <li>{{ $mission }}</li>
+                                                @endif
+                                            @endforeach
+                                        </ul>
+                                    </div>
+
+                                    <!-- CV Link -->
+                                    @if($candidate->cv)
+                                        <div class="pt-2">
+                                            <a href="{{ $candidate->cv }}" target="_blank" class="inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                </svg>
+                                                Lihat Curriculum Vitae (CV)
+                                            </a>
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
                         </div>
 
