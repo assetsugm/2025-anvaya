@@ -3,7 +3,7 @@ name: Deploy to Arenhost
 on:
   push:
     branches:
-      - main
+      - old
 
 jobs:
   deploy:
