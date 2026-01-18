@@ -47,7 +47,7 @@ Route::middleware('auth:admin')->group(function () {
         foreach ($voters as $index => $voter) {
             Mail::to($voter->email)
                 ->later(
-                    now()->addSeconds($index * 5),
+                    now()->addSeconds($index * 10),
                     new VoteToken($voter->code, $voter->name)
                 );
         }
