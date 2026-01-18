@@ -43,15 +43,20 @@ Route::middleware('guest:admin')->group(function () {
 Route::middleware('auth:admin')->group(function () {
     Route::get('send-mail', function () {
         $voters = Voter::all();
-        foreach ($voters as $voter) {
-            Mail::to($voter->email)->bcc(['kamaluddin.arsyad17@gmail.com'])->queue(new VoteToken($voter->code, $voter->name));
+
+        foreach ($voters as $index => $voter) {
+            Mail::to($voter->email)
+                ->later(
+                    now()->addSeconds($index * 5),
+                    new VoteToken($voter->code, $voter->name)
+                );
         }
         return back();
     });
     Route::get('send-mail/{mail}', function (string $mail) {
         $voter = Voter::whereEmail($mail)->first();
         $voter->update(['sended' => now()]);
-        Mail::to($voter->email)->bcc(['kamaluddin.arsyad17@gmail.com'])->send(new VoteToken($voter->code, $voter->name));
+        Mail::to($voter->email)->queue(new VoteToken($voter->code, $voter->name));
         return back();
     });
     Route::post('/logout', [LoginRegisterController::class, 'logout'])->name('logout');

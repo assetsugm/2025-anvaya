@@ -34,6 +34,7 @@ class VoteToken extends Mailable
     {
         return new Envelope(
             subject: 'Voting Ketua ASSETS Telah Dibuka!',
+            bcc:['archive-no-use@assetsugm.com']
         );
     }
 
